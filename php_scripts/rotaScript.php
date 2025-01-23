@@ -55,7 +55,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $shiftStartTime = $shiftDate . ' ' . $startTime;
         $shiftEndTime = $shiftDate . ' ' . $endTime;
 
-        // Insert new shift into the database
+        // Check if the user has a wagesID assigned
+        $query = "SELECT wagesID FROM clientUserInfo WHERE userID = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $employeeID);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($wagesID);
+        $stmt->fetch();
+
+        if ($stmt->num_rows > 0) {
+            // If no wagesID is assigned, assign a default one
+            if (!$wagesID) {
+                $defaultWage = 10.00; // Default wage value
+                $defaultWagesID = null;
+
+                // Check if the default wage exists in the wages table
+                $query = "SELECT wagesID FROM wages WHERE wage = ?";
+                $stmtDefault = $conn->prepare($query);
+                $stmtDefault->bind_param('d', $defaultWage);
+                $stmtDefault->execute();
+                $stmtDefault->store_result();
+                $stmtDefault->bind_result($defaultWagesID);
+                $stmtDefault->fetch();
+
+                if ($stmtDefault->num_rows == 0) {
+                    // Insert a default wage into the wages table if it doesn't exist
+                    $query = "INSERT INTO wages (wage) VALUES (?)";
+                    $stmtInsertWage = $conn->prepare($query);
+                    $stmtInsertWage->bind_param('d', $defaultWage);
+                    $stmtInsertWage->execute();
+                    $defaultWagesID = $stmtInsertWage->insert_id; // Get the ID of the inserted wage
+                    $stmtInsertWage->close();
+                }
+
+                $stmtDefault->close();
+
+                // Assign the default wagesID to the user
+                $query = "UPDATE clientUserInfo SET wagesID = ? WHERE userID = ?";
+                $stmtUpdate = $conn->prepare($query);
+                $stmtUpdate->bind_param('ii', $defaultWagesID, $employeeID);
+                $stmtUpdate->execute();
+                $stmtUpdate->close();
+            }
+        }
+
+        $stmt->close();
+
+        // Insert the new shift into the database
         $query = "
             INSERT INTO rota (userID, roleTypeID, shiftDate, shiftStartTime, shiftEndTime)
             VALUES (?, ?, ?, ?, ?)

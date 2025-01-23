@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+include "php_scripts\wagesScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
@@ -35,10 +36,24 @@ if (!isset($_SESSION['userID'])) {
             <a href="wages.php">Wages</a>
         </div>
     </header>
-    <h1 class="login_txt">Wage calculator</h1>
+    <h1 class="login_txt">Wage Dashboard</h1>
     <section>
-        <article>
-            Add div here for function
+    <article class="table">
+            <!-- Title of the section is now included in the table header -->
+            <table class="dataTable" border="1">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="table-header">Wages For <?php echo htmlspecialchars($forname . ' ' . $surname); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Your Wage This Month</th>
+                        <td>£<?php echo htmlspecialchars($totalWage); ?></td>
+                    </tr>
+                </tbody>
+
+            </table>
         </article>
     </section>
     <footer class="mainfooter">
