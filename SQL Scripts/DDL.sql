@@ -55,9 +55,9 @@ CREATE TABLE sales (
     productID INT,  -- Link to the product sold
     quantitySold DECIMAL(10, 2),  -- Quantity sold
     salePrice DECIMAL(10, 2),  -- Price at the time of sale
-    revenue DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    totalCosts DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    profit DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    revenue DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
+    totalCosts DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
+    profit DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
     FOREIGN KEY (productID) REFERENCES products(productID)
 );
 
@@ -88,7 +88,7 @@ CREATE TABLE rota (
 CREATE TABLE wages (
     wagesID INT AUTO_INCREMENT PRIMARY KEY,
     rotaID INT,  -- Link to the rota
-    wage DECIMAL(10, 2)  -- wage, adjusted precision
+    wage DECIMAL(10, 0)  -- wage, adjusted precision
 );
 
 
@@ -109,3 +109,7 @@ ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID) ON DELETE SET NULL;
 -- 13. Add foreign keys to `wages`
 ALTER TABLE wages
 ADD FOREIGN KEY (rotaID) REFERENCES rota(rotaID);
+-- Add `roleTypeID` column and foreign key reference to `clientUserInfo` table
+ALTER TABLE clientUserInfo
+ADD COLUMN roleTypeID INT,
+ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID);
