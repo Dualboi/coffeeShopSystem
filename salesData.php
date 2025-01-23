@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "php_scripts\salesDataScript.php";
+include "php_scripts/salesDataScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
@@ -9,6 +9,11 @@ include "php_scripts\salesDataScript.php";
 if (!isset($_SESSION['userID'])) {
     header("Location: index.php");
     exit;
+
+    echo "<pre>";
+    var_dump($saleDataItems);  // Check if data is actually in the array
+    echo "</pre>";
+    
 } ?>
 <!DOCTYPE html>
 <html lang="en">
