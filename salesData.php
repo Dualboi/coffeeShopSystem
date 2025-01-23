@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "php_scripts\salesDataScript.php";
+include "php_scripts/salesDataScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
