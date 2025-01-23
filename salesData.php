@@ -9,6 +9,11 @@ include "php_scripts/salesDataScript.php";
 if (!isset($_SESSION['userID'])) {
     header("Location: index.php");
     exit;
+
+    echo "<pre>";
+    var_dump($saleDataItems);  // Check if data is actually in the array
+    echo "</pre>";
+    
 } ?>
 <!DOCTYPE html>
 <html lang="en">

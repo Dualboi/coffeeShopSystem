@@ -34,7 +34,7 @@ if ($result && $result->num_rows > 0) {
         'profit' => $row['totalProfit'] ?? 0,
     ];
 } else {
-    $errorMessage = "No sales data found.";
+    $errorMessage = "No sales data found. ";
 }
 
 // Close the database connection

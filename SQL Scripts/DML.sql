@@ -1,6 +1,6 @@
 -- Insert the values
-INSERT INTO roleType (roleType) 
-VALUES 
+INSERT INTO roleType (roleType)
+VALUES
     ('Barista'),
     ('Chef'),
     ('Waiter'),
@@ -27,8 +27,8 @@ INSERT INTO inventory (supplierID, productID, stockAmount) VALUES
 (2, 2, 50);   -- 50 units of Green Tea from Supplier B
 
 -- Insert a sale
-INSERT INTO sales (productID, quantitySold, salePrice, saleDate) VALUES
-(1, 10, 10.00, '2025-01-20 12:00:00');  -- Sold 10 units of Coffee Beans
+INSERT INTO sales (productID, quantitySold, salePrice) VALUES
+(1, 10, 10.00);  -- Sold 10 units of Coffee Beans
 
 DELIMITER //
 
