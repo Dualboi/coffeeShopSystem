@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include "php_scripts\wagesScript.php";
+include "php_scripts/wagesScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
@@ -28,14 +28,16 @@ if (!isset($_SESSION['userID'])) {
         <div class="navbar">
             <a href="<?php echo isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? 'adminPage.php' : 'ClientPage.php'; ?>">Home</a>
             <a href="index.php">Logout</a>
-            <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
-                <a href="salesData.php"> Sales data </a>
-            <?php endif; ?>
             <a href="inventory.php">Inventory</a>
             <a href="rota.php">Rota</a>
             <a href="wages.php">Wages</a>
         </div>
     </header>
+    <?php if (!empty($errorMessage)): ?>
+    <div class="error-message">
+        <p><?php echo htmlspecialchars($errorMessage); ?></p>
+    </div>
+<?php endif; ?>
     <h1 class="login_txt">Wage Dashboard</h1>
     <section>
     <article class="table">
