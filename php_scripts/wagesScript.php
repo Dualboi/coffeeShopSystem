@@ -1,28 +1,29 @@
 <?php
-include "php_scripts/db_connection.php"; // Include your database connection
+session_start();
 
-// Initialize variables
-$totalWage = 0; // Initialize the $totalWage variable to avoid undefined warnings
+include "php_scripts/db_connection.php";
+
+$totalWage = 0;
 $userDetails = [];
-$successMessage = "";
 $errorMessage = "";
 
-// Check if userID is in the session
+// Check if the user is logged in
 if (isset($_SESSION['userID'])) {
     $userID = $_SESSION['userID'];
 
-    // Connect to the database
     $db = Database::getInstance();
     $conn = $db->getConnection();
 
-    // Query to fetch user details and calculate total wages
+    // Query to fetch users first name, last name, total hours worked and sum it by the wage.
+    // If no total wage it is assigned the value of 0 to still be outputted.
     $query = "
         SELECT 
-            u.forname, u.surname, 
-            SUM(r.hoursWorked * w.wage) AS totalWage
+            u.forname, 
+            u.surname, 
+            IFNULL(SUM(r.hoursWorked * w.wage), 0) AS totalWage
         FROM clientUserInfo u
-        JOIN rota r ON u.userID = r.userID
-        JOIN wages w ON u.wagesID = w.wagesID
+        LEFT JOIN rota r ON u.userID = r.userID
+        LEFT JOIN wages w ON u.wagesID = w.wagesID
         WHERE u.userID = ?
         GROUP BY u.userID
     ";
@@ -32,11 +33,11 @@ if (isset($_SESSION['userID'])) {
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($forname, $surname, $fetchedTotalWage);
-    $stmt->fetch();
 
-    // Check if user details are found
+    // Fetch data and populate variables
     if ($stmt->num_rows > 0) {
-        $totalWage = $fetchedTotalWage; // Assign the fetched total wage
+        $stmt->fetch();
+        $totalWage = $fetchedTotalWage;
         $userDetails = [
             "forname" => $forname,
             "surname" => $surname,
@@ -51,5 +52,4 @@ if (isset($_SESSION['userID'])) {
 } else {
     $errorMessage = "User is not logged in.";
 }
-
 ?>
