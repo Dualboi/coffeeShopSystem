@@ -30,20 +30,14 @@ INSERT INTO inventory (supplierID, productID, stockAmount) VALUES
 INSERT INTO sales (productID, quantitySold, salePrice) VALUES
 (1, 10, 10.00);  -- Sold 10 units of Coffee Beans
 
-DELIMITER //
+INSERT INTO wages (roleTypeID, wage)
+VALUES
+    (1, 12), -- Barista
+    (2, 17), -- Manager
+    (3, 12), -- Waiter
+    (4, 13)  -- Chef
+ON DUPLICATE KEY UPDATE wage = VALUES(wage);
 
-CREATE TRIGGER calculate_hours_worked_before_update
-BEFORE UPDATE ON rota
-FOR EACH ROW
-BEGIN
-    IF NEW.shiftStartTime IS NOT NULL AND NEW.shiftEndTime IS NOT NULL THEN
-        SET NEW.hoursWorked = TIMESTAMPDIFF(MINUTE, NEW.shiftStartTime, NEW.shiftEndTime) / 60;
-    ELSE
-        SET NEW.hoursWorked = NULL;
-    END IF;
-END; //
-
-DELIMITER ;
 
 DELIMITER //
 
@@ -52,10 +46,27 @@ BEFORE INSERT ON rota
 FOR EACH ROW
 BEGIN
     IF NEW.shiftStartTime IS NOT NULL AND NEW.shiftEndTime IS NOT NULL THEN
-        SET NEW.hoursWorked = TIMESTAMPDIFF(MINUTE, NEW.shiftStartTime, NEW.shiftEndTime) / 60;
+        SET NEW.hoursWorked = SEC_TO_TIME(TIMESTAMPDIFF(SECOND, NEW.shiftStartTime, NEW.shiftEndTime));
     ELSE
         SET NEW.hoursWorked = NULL; -- Set to NULL if times are not provided
     END IF;
 END; //
 
 DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER calculate_hours_worked_before_insert
+BEFORE INSERT ON rota
+FOR EACH ROW
+BEGIN
+    IF NEW.shiftStartTime IS NOT NULL AND NEW.shiftEndTime IS NOT NULL THEN
+        SET NEW.hoursWorked = SEC_TO_TIME(TIMESTAMPDIFF(SECOND, NEW.shiftStartTime, NEW.shiftEndTime));
+    ELSE
+        SET NEW.hoursWorked = NULL; -- Set to NULL if times are not provided
+    END IF;
+END; //
+
+DELIMITER ;
+

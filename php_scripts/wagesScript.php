@@ -14,18 +14,26 @@ if (isset($_SESSION['userID'])) {
     $db = Database::getInstance();
     $conn = $db->getConnection();
 
-    // Query to fetch users first name, last name, total hours worked and sum it by the wage.
-    // If no total wage it is assigned the value of 0 to still be outputted.
+    // Query to fetch users first name, last name, total hours worked and calculate wages by role type.
     $query = "
-        SELECT 
-            u.forname, 
-            u.surname, 
-            IFNULL(SUM(r.hoursWorked * w.wage), 0) AS totalWage
-        FROM clientUserInfo u
-        LEFT JOIN rota r ON u.userID = r.userID
-        LEFT JOIN wages w ON u.wagesID = w.wagesID
-        WHERE u.userID = ?
-        GROUP BY u.userID
+    SELECT 
+        u.forname, 
+        u.surname, 
+        IFNULL(SUM(
+            TIME_TO_SEC(r.hoursWorked) / 3600 * 
+            CASE rt.roleType
+                WHEN 'Barista' THEN 12
+                WHEN 'Manager' THEN 17
+                WHEN 'Waiter' THEN 12
+                WHEN 'Chef' THEN 13
+                ELSE 0
+            END
+        ), 0) AS totalWage
+    FROM clientUserInfo u
+    LEFT JOIN rota r ON u.userID = r.userID
+    LEFT JOIN roleType rt ON r.roleTypeID = rt.roleTypeID
+    WHERE u.userID = ?
+    GROUP BY u.userID
     ";
 
     $stmt = $conn->prepare($query);

@@ -81,13 +81,14 @@ CREATE TABLE rota (
     shiftDate DATE NOT NULL,
     shiftStartTime DATETIME NOT NULL,
     shiftEndTime DATETIME NOT NULL,
-    hoursWorked DECIMAL(5, 2) NULL
+    hoursWorked TIME NULL DEFAULT NULL;
 );
 
 -- 10. Create the `wages` table without the foreign key to `rota` (for now)
 CREATE TABLE wages (
     wagesID INT AUTO_INCREMENT PRIMARY KEY,
     rotaID INT,  -- Link to the rota
+    roleTypeID INT,
     wage DECIMAL(10, 0)  -- wage, adjusted precision
 );
 
@@ -108,7 +109,8 @@ ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID) ON DELETE SET NULL;
 
 -- 13. Add foreign keys to `wages`
 ALTER TABLE wages
-ADD FOREIGN KEY (rotaID) REFERENCES rota(rotaID);
+ADD FOREIGN KEY (rotaID) REFERENCES rota(rotaID)
+ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID);
 -- Add `roleTypeID` column and foreign key reference to `clientUserInfo` table
 ALTER TABLE clientUserInfo
 ADD COLUMN roleTypeID INT,
