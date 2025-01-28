@@ -29,7 +29,7 @@ CREATE TABLE products (
     productName VARCHAR(255),
     categoryID INT,  -- Links to the product category
     price DECIMAL(10, 2),  -- Price per unit
-    cost DECIMAL(10, 2) NOT NULL DEFAULT (0.00), -- cost of the product to the business
+    cost DECIMAL(10, 2) NOT NULL DEFAULT 0.00, -- Cost of the product to the business
     FOREIGN KEY (categoryID) REFERENCES product_categories(categoryID)
 );
 
@@ -55,9 +55,9 @@ CREATE TABLE sales (
     productID INT,  -- Link to the product sold
     quantitySold DECIMAL(10, 2),  -- Quantity sold
     salePrice DECIMAL(10, 2),  -- Price at the time of sale
-    revenue DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
-    totalCosts DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
-    profit DECIMAL(10, 0) NOT NULL DEFAULT 0.00,
+    revenue DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    totalCosts DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    profit DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     FOREIGN KEY (productID) REFERENCES products(productID)
 );
 
@@ -81,37 +81,27 @@ CREATE TABLE rota (
     shiftDate DATE NOT NULL,
     shiftStartTime DATETIME NOT NULL,
     shiftEndTime DATETIME NOT NULL,
-    hoursWorked TIME NULL DEFAULT NULL;
+    hoursWorked TIME NULL DEFAULT NULL,
+    FOREIGN KEY (userID) REFERENCES clientUserInfo(userID),
+    FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID) ON DELETE SET NULL
 );
 
--- 10. Create the `wages` table without the foreign key to `rota` (for now)
+-- 10. Create the `wages` table
 CREATE TABLE wages (
     wagesID INT AUTO_INCREMENT PRIMARY KEY,
     rotaID INT,  -- Link to the rota
     roleTypeID INT,
-    wage DECIMAL(10, 0)  -- wage, adjusted precision
+    wage DECIMAL(10, 2),  -- Wage with adjusted precision
+    FOREIGN KEY (rotaID) REFERENCES rota(rotaID),
+    FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID)
 );
 
-
--- Now, add foreign keys to `clientUserInfo`, `rota`, and `wages`
-
--- 11. Add foreign keys to `clientUserInfo`
-ALTER TABLE clientUserInfo
-ADD COLUMN rotaID INT DEFAULT NULL,
-ADD COLUMN wagesID INT,
-ADD FOREIGN KEY (rotaID) REFERENCES rota(rotaID) ON DELETE SET NULL,
-ADD FOREIGN KEY (wagesID) REFERENCES wages(wagesID);
-
--- 12. Add foreign keys to `rota`
-ALTER TABLE rota
-ADD FOREIGN KEY (userID) REFERENCES clientUserInfo(userID),
-ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID) ON DELETE SET NULL;
-
--- 13. Add foreign keys to `wages`
-ALTER TABLE wages
-ADD FOREIGN KEY (rotaID) REFERENCES rota(rotaID)
-ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID);
--- Add `roleTypeID` column and foreign key reference to `clientUserInfo` table
+-- 11. Add `roleTypeID` column and foreign key reference to `clientUserInfo` table
 ALTER TABLE clientUserInfo
 ADD COLUMN roleTypeID INT,
 ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID);
+
+-- 12. Remove unnecessary circular dependencies
+-- The `rotaID` and `wagesID` columns in `clientUserInfo` were removed for better normalization
+-- Ensure relationships between rota, wages, and roles are cleanly defined.
+

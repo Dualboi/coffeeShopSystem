@@ -53,20 +53,3 @@ BEGIN
 END; //
 
 DELIMITER ;
-
-
-DELIMITER //
-
-CREATE TRIGGER calculate_hours_worked_before_insert
-BEFORE INSERT ON rota
-FOR EACH ROW
-BEGIN
-    IF NEW.shiftStartTime IS NOT NULL AND NEW.shiftEndTime IS NOT NULL THEN
-        SET NEW.hoursWorked = SEC_TO_TIME(TIMESTAMPDIFF(SECOND, NEW.shiftStartTime, NEW.shiftEndTime));
-    ELSE
-        SET NEW.hoursWorked = NULL; -- Set to NULL if times are not provided
-    END IF;
-END; //
-
-DELIMITER ;
-
