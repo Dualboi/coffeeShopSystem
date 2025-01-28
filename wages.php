@@ -6,12 +6,7 @@ include "php_scripts/adminWagesScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
-
-// Check if the user is logged in
-if (!isset($_SESSION['userID'])) {
-    header("Location: index.php");
-    exit;
-} ?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,29 +57,43 @@ if (!isset($_SESSION['userID'])) {
             </table>
 
             <table class="dataTable" border="1">
-            <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
-                <thead>
+    <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
+        <thead>
+            <tr>
+                <th colspan="2" class="table-header">All Wages</th>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th>Staff</th>
+                <th>Pay</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($inventoryItems)): ?>
+                <?php foreach ($inventoryItems as $item): ?>
                     <tr>
-                        <th colspan="3" class="table-header">All Wages</th>
+                        <td><?php echo htmlspecialchars($item['staff']); ?></td>
+                        <td>£<?php echo htmlspecialchars($item['pay']); ?></td>
                     </tr>
-                </thead>
-                <thead>
-                    <tr>
-                        <th>Staff</th>
-                        <th>Wages</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($inventoryItems as $item): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($item['staff']); ?></td>
-                            <td>£<?php echo htmlspecialchars($item['wages']); ?></td>
-                            <td>£<?php echo htmlspecialchars($item['allWagesTotal']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <?php endforeach; ?>
+                <tr>
+                    <td><strong>Total Pay Outgoing</strong></td>
+                    <td><strong>£<?php echo number_format($totalPay, 2); ?></strong></td>
+                </tr>
+            <?php else: ?>
+                <tr>
+                    <td colspan="2"><?php echo htmlspecialchars($errorMessage); ?></td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    <?php else: ?>
+        <tr>
+            <td colspan="2">You are not authorized to view this data.</td>
+        </tr>
+    <?php endif; ?>
+</table>
+
         </article>
     </section>
     <footer class="mainfooter">

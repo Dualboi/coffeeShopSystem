@@ -233,7 +233,6 @@ div.email {
     border-collapse: collapse;
     margin: 20px 0;
     background-color: #f9f9f9;
-    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -294,7 +293,6 @@ th.table-header {
     margin: 20px auto;
     margin-top: 0;
     background: #f3f3f3;
-    border-radius: 8px;
 }
 
 /* Table styling */
@@ -303,7 +301,6 @@ th.table-header {
     border-collapse: collapse;
     margin-bottom: 20px;
     background: white;
-    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -350,7 +347,6 @@ th.table-header {
     margin-bottom: 5%;
     margin-top: 2%;
     padding: 20px;
-    border-radius: 8px;
     box-shadow: 1px 4px 7px rgba(0, 0, 0, 0.1);
 }
 
@@ -373,7 +369,6 @@ th.table-header {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 5px;
     font-size: 1rem;
 }
 

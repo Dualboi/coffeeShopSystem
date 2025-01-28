@@ -1,7 +1,9 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-include "php_scripts/db_connection.php";
+require_once "php_scripts/db_connection.php";
 
 $totalWage = 0;
 $userDetails = [];
@@ -56,7 +58,6 @@ if (isset($_SESSION['userID'])) {
     }
 
     $stmt->close();
-    $conn->close();
 } else {
     $errorMessage = "User is not logged in.";
 }
