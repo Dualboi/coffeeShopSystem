@@ -38,7 +38,7 @@ include "php_scripts/adminWagesScript.php";
     </div>
 <?php endif; ?>
     <h1 class="login_txt">Wage Dashboard</h1>
-    <section>
+    <section class="inventory-section">
     <article class="table">
             <!-- Title of the section is now included in the table header -->
             <table class="dataTable" border="1">
