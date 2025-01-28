@@ -82,7 +82,7 @@ include "php_scripts/inventoryScript.php";
                     </select>
 
                     <label for="sold_amount">Amount Sold</label>
-                    <input type="number" id="sold_amount" name="sold_amount" required>
+                    <input type="number" id="sold_amount" name="sold_amount" id="positiveNumber" name="positiveNumber" min="0" required>
 
                     <input class="inventory-submit-inven" type="submit"
                         value="<?php echo isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? 'Update Inventory and Show Sales Data' : 'Update Inventory'; ?>">
@@ -95,13 +95,13 @@ include "php_scripts/inventoryScript.php";
                     <input type="text" id="new_product_name" name="new_product_name" required>
 
                     <label for="new_product_amount">Product Amount</label>
-                    <input type="number" id="new_product_amount" name="new_product_amount" required>
+                    <input type="number" id="new_product_amount" name="new_product_amount" id="positiveNumber" name="positiveNumber" min="0" required>
 
                     <label for="new_product_price">Product Price</label>
-                    <input type="number" step="0.01" id="new_product_price" name="new_product_price" required>
+                    <input type="number" step="0.01" id="new_product_price" name="new_product_price" id="positiveNumber" name="positiveNumber" min="0.01" required>
 
                     <label for="new_product_cost">Product Cost</label>
-                    <input type="number" step="0.01" id="new_product_cost" name="new_product_cost" required>
+                    <input type="number" step="0.01" id="new_product_cost" name="new_product_cost"  id="positiveNumber" name="positiveNumber" min="0.01" required>
 
                     <label for="new_category_id">Category</label>
                     <select name="new_category_id" id="new_category_id" required>
