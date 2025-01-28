@@ -54,7 +54,7 @@ if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']) {
 
     $stmt->close();
 } else {
-    $errorMessage = "You are not authorized to view this data.";
+    ;
 }
 
 ?>
