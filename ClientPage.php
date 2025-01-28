@@ -98,7 +98,7 @@ WHERE u.userID = ?
     </header>
     <h1 class="login_txt">Client portal</h1>
     <h3 class="login_txt">Hello, <?php echo htmlspecialchars($forname . ' ' . $surname); ?>! <i class="fa-regular fa-face-smile-beam"></i></h3><!-- create "hello client *user" here!-->
-    <section>
+    <section class="inventory-section">
         <article class="table">
             <!-- Title of the section is now included in the table header -->
             <table class="dataTable" border="1">
