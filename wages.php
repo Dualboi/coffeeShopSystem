@@ -1,6 +1,8 @@
 <?php
 
 include "php_scripts/wagesScript.php";
+
+include "php_scripts/adminWagesScript.php";
 // Debugging session variables
 // Uncomment during debugging to verify session data
 // echo "<pre>"; print_r($_SESSION); echo "</pre>";
@@ -57,6 +59,31 @@ if (!isset($_SESSION['userID'])) {
                     </tr>
                 </tbody>
 
+            </table>
+
+            <table class="dataTable" border="1">
+            <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
+                <thead>
+                    <tr>
+                        <th colspan="3" class="table-header">All Wages</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Wages</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($inventoryItems as $item): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($item['staff']); ?></td>
+                            <td>£<?php echo htmlspecialchars($item['wages']); ?></td>
+                            <td>£<?php echo htmlspecialchars($item['allWagesTotal']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
         </article>
     </section>
