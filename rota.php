@@ -159,7 +159,7 @@ if (!isset($_SESSION['userID'])) {
 
         </article>
     </section>
-    <footer class="mainfooter">
+    <footer class="<?php echo isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? "rotafooter" : "mainfooter"; ?>">
         <a class="logofooter"><i class="fa-regular fa-copyright"></i> 2025 coffee.co All Rights Reserved.</a>
     </footer>
 </body>
