@@ -397,6 +397,15 @@ th.table-header {
     box-sizing: border-box;
 }
 
+.role_dropdown{
+    
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
 .inventory-form-container input[type="submit"]:hover {
     background-color: #0a4784;
 }

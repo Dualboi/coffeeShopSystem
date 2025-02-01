@@ -38,7 +38,7 @@ VALUES
     (4, 13)  -- Chef
 ON DUPLICATE KEY UPDATE wage = VALUES(wage);
 
-
+-- Creates trigger for calculating total hours worked when shift start and shift end are inserted
 DELIMITER //
 
 CREATE TRIGGER calculate_hours_worked_before_insert
@@ -51,5 +51,64 @@ BEGIN
         SET NEW.hoursWorked = NULL; -- Set to NULL if times are not provided
     END IF;
 END; //
+
+DELIMITER ;
+
+DELIMITER $$
+
+-- Email Validation Trigger
+DELIMITER $$
+
+CREATE TRIGGER validate_email_before_insert
+BEFORE INSERT ON clientUserInfo
+FOR EACH ROW
+BEGIN
+    DECLARE emailError VARCHAR(500);
+    SET emailError = '';
+
+    -- Check if the email is an admin email (ends with @coffee.co)
+    IF NEW.isAdmin = 1 AND NEW.email NOT LIKE '%@coffee.co' THEN
+        SET emailError = CONCAT(emailError, 'Invalid admin email: must end with @coffee.co. ');
+    END IF;
+    
+    -- Check for standard email format with common TLDs
+    IF NEW.email NOT REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(com|net|org|edu|gov|mil|info|io)$' THEN
+        SET emailError = CONCAT(emailError, 'Invalid email format: email does not match standard format with valid TLDs. ');
+    END IF;
+
+    -- If any errors exist, raise the error message
+    IF emailError != '' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = emailError;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+-- Name Validation Trigger
+CREATE TRIGGER validate_name_before_insert
+BEFORE INSERT ON clientUserInfo
+FOR EACH ROW
+BEGIN
+    DECLARE nameError VARCHAR(500);
+    SET nameError = '';
+
+    -- Validate First Name
+    IF NEW.forname NOT REGEXP '^[A-Za-z]+([-\'][A-Za-z]+)*$' THEN
+        SET nameError = CONCAT(nameError, 'First Name can only contain letters, apostrophes, and hyphens. ');
+    END IF;
+
+    -- Validate Last Name
+    IF NEW.surname NOT REGEXP '^[A-Za-z]+([-\'][A-Za-z]+)*$' THEN
+        SET nameError = CONCAT(nameError, 'Last Name can only contain letters, apostrophes, and hyphens. ');
+    END IF;
+
+    -- If any errors exist, raise the error message
+    IF nameError != '' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = nameError;
+    END IF;
+END$$
 
 DELIMITER ;

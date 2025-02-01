@@ -1,3 +1,8 @@
+<?php
+session_start()
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,6 +31,13 @@
     <p class="about"> The complete coffee shop management system with built in inventory management, rota managment, and wage calculation.</p>
     <section>
         <article>
+            <!-- Displaying Successfull registration -->
+            <?php
+                if (isset($_SESSION['successMessage'])) {
+                    echo '<p style="color: green;">' . $_SESSION['successMessage'] . '</p>';
+                    unset($_SESSION['successMessage']);  // Clear the success message after displaying
+                }
+                ?>
             <div>
                 <form method="POST" action="login.php">
                     <div class="email" for="email">Email:</div>
