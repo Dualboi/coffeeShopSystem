@@ -100,8 +100,3 @@ CREATE TABLE wages (
 ALTER TABLE clientUserInfo
 ADD COLUMN roleTypeID INT,
 ADD FOREIGN KEY (roleTypeID) REFERENCES roletype(roleTypeID);
-
--- 12. Remove unnecessary circular dependencies
--- The `rotaID` and `wagesID` columns in `clientUserInfo` were removed for better normalization
--- Ensure relationships between rota, wages, and roles are cleanly defined.
-
