@@ -5,7 +5,6 @@ include "php_scripts/db_connection.php"; // Include your database connection
 $inventoryItems = [];
 $successMessage = "";
 $errorMessage = "";
-$stockAmount = "";
 
 // Connect to the database
 $db = Database::getInstance();
@@ -13,15 +12,36 @@ $conn = $db->getConnection();
 
 // Handle removing sold items (inventory update)
 if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
-    $productID = $_POST['sold_product_id'];
-    $soldAmount = $_POST['sold_amount'];
+    $productID = intval($_POST['sold_product_id']);
+    $soldAmount = intval($_POST['sold_amount']);
 
-    if ($stockAmount === null) {
-        $_SESSION['errorMessage'] = "Product not found in inventory.";
+    // Ensure the sold amount is a valid number
+    if ($soldAmount <= 0) {
+        $_SESSION['errorMessage'] = "Invalid quantity entered.";
         header("Location: inventory.php");
         exit;
     }
 
+    // Fetch the current stock from the database
+    $stockQuery = "SELECT stockAmount FROM inventory WHERE productID = ?";
+    $stmtStock = $conn->prepare($stockQuery);
+    $stmtStock->bind_param("i", $productID);
+    $stmtStock->execute();
+    $stmtStock->store_result();
+    $stmtStock->bind_result($stockAmount);
+    $stmtStock->fetch();
+
+    // Check if product exists
+    if ($stmtStock->num_rows === 0) {
+        $_SESSION['errorMessage'] = "Product not found in inventory.";
+        $stmtStock->close();
+        header("Location: inventory.php");
+        exit;
+    }
+
+    $stmtStock->close();
+
+    // Check if enough stock is available
     if ($stockAmount < $soldAmount) {
         $_SESSION['errorMessage'] = "Not enough stock available.";
         header("Location: inventory.php");
@@ -31,7 +51,7 @@ if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
     // Update inventory after the sale
     $updateQuery = "UPDATE inventory SET stockAmount = stockAmount - ? WHERE productID = ?";
     $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("di", $soldAmount, $productID);
+    $stmt->bind_param("ii", $soldAmount, $productID);
 
     if ($stmt->execute()) {
         // Check if stockAmount is now 0, and delete the row if it is
@@ -40,10 +60,10 @@ if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
         $stmtCheck->bind_param("i", $productID);
         $stmtCheck->execute();
         $stmtCheck->store_result();
-        $stmtCheck->bind_result($stockAmount);
+        $stmtCheck->bind_result($remainingStock);
         $stmtCheck->fetch();
 
-        if ($stockAmount <= 0) {
+        if ($remainingStock <= 0) {
             // Delete the product from inventory if sold out
             $deleteInventoryQuery = "DELETE FROM inventory WHERE productID = ?";
             $deleteStmt = $conn->prepare($deleteInventoryQuery);
@@ -52,16 +72,22 @@ if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
             $deleteStmt->close();
         }
 
-        $successMessage = "Inventory updated successfully!";
+        $_SESSION['successMessage'] = "Inventory updated successfully!";
     } else {
-        $errorMessage = "Failed to update inventory.";
+        $_SESSION['errorMessage'] = "Failed to update inventory.";
     }
 
-    if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']) {
-        header("Location: salesData.php");
-    }
     $stmtCheck->close();
     $stmt->close();
+
+    // Redirect admin users to sales data page
+    if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']) {
+        header("Location: salesData.php");
+        exit;
+    } else {
+        header("Location: inventory.php");
+        exit;
+    }
 }
 // Handling the creation of sales (adding sales data)
 if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
