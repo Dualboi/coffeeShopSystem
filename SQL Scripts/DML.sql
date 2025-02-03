@@ -52,8 +52,6 @@ BEGIN
     END IF;
 END; //
 
-DELIMITER ;
-
 BEGIN
     DECLARE emailError VARCHAR(500);
     SET emailError = '';
@@ -61,7 +59,7 @@ BEGIN
     -- Skip validation if email contains '@coffee.co'
     IF NEW.email NOT LIKE '%@coffee.co%' THEN
         -- Validate non-admin email: Must follow standard email format with valid TLDs
-        IF NEW.email NOT REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov|mil|info|io)$' THEN
+        IF NEW.email NOT REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.(com|net|org|edu|gov|mil|info|io)$' THEN
             SET emailError = CONCAT(emailError, 'Invalid email format: must be a standard email format with valid TLDs. ');
         END IF;
     END IF;
@@ -71,9 +69,6 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = emailError;
     END IF;
 END
-
-
-DELIMITER //
 
 -- Name Validation Trigger
 CREATE TRIGGER validate_name_before_insert
