@@ -394,9 +394,21 @@ th.table-header {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+    margin-bottom: 2%;
     box-sizing: border-box;
 }
 
+.inventory-form-container input[type="submit"] {
+    background-color: #083b6a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 2%;
+}
 .role_dropdown{
     
     padding: 10px;

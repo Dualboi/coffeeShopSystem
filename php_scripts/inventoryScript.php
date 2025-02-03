@@ -5,6 +5,7 @@ include "php_scripts/db_connection.php"; // Include your database connection
 $inventoryItems = [];
 $successMessage = "";
 $errorMessage = "";
+$stockAmount = "";
 
 // Connect to the database
 $db = Database::getInstance();
@@ -14,6 +15,18 @@ $conn = $db->getConnection();
 if (isset($_POST['sold_product_id']) && isset($_POST['sold_amount'])) {
     $productID = $_POST['sold_product_id'];
     $soldAmount = $_POST['sold_amount'];
+
+    if ($stockAmount === null) {
+        $_SESSION['errorMessage'] = "Product not found in inventory.";
+        header("Location: inventory.php");
+        exit;
+    }
+
+    if ($stockAmount < $soldAmount) {
+        $_SESSION['errorMessage'] = "Not enough stock available.";
+        header("Location: inventory.php");
+        exit;
+    }
 
     // Update inventory after the sale
     $updateQuery = "UPDATE inventory SET stockAmount = stockAmount - ? WHERE productID = ?";

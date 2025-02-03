@@ -1,5 +1,5 @@
 <?php
-// Class to mamage the database connection
+// Class to manage the database connection
 class Database
 {
     private static $instance = null;

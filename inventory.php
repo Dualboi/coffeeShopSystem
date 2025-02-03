@@ -86,7 +86,10 @@ include "php_scripts/inventoryScript.php";
 
                     <input class="inventory-submit-inven" type="submit"
                         value="<?php echo isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] ? 'Update Inventory and Show Sales Data' : 'Update Inventory'; ?>">
-
+                    <?php if (isset($_SESSION['errorMessage'])) {
+                        echo '<p style="color: red;">' . $_SESSION['errorMessage'] . '</p>';
+                        unset($_SESSION['errorMessage']);  // Clear the error message after displaying
+                    } ?>
                 </form>
 
                 <form class="inventory-add-items" method="POST" action="inventory.php">
@@ -101,7 +104,7 @@ include "php_scripts/inventoryScript.php";
                     <input type="number" step="0.01" id="new_product_price" name="new_product_price" id="positiveNumber" name="positiveNumber" min="0.01" required>
 
                     <label for="new_product_cost">Product Cost</label>
-                    <input type="number" step="0.01" id="new_product_cost" name="new_product_cost"  id="positiveNumber" name="positiveNumber" min="0.01" required>
+                    <input type="number" step="0.01" id="new_product_cost" name="new_product_cost" id="positiveNumber" name="positiveNumber" min="0.01" required>
 
                     <label for="new_category_id">Category</label>
                     <select name="new_category_id" id="new_category_id" required>
