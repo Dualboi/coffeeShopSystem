@@ -70,6 +70,7 @@ BEGIN
     END IF;
 END
 
+
 -- Name Validation Trigger
 CREATE TRIGGER validate_name_before_insert
 BEFORE INSERT ON clientUserInfo
