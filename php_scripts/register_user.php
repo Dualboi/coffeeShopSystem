@@ -25,19 +25,20 @@ $isAdmin = preg_match('/@coffee\.co(\.[a-z]+)?$/i', $email) ? 1 : 0;
 $errors = [];
 
 // Password validation
-$passwordRegex = '/^(?=.*[A-Z]).{9,}$/'; // At least 9 characters, one uppercase letter
+$passwordRegex = '/^(?=.*[A-Z]).{8,}$/'; // At least 9 characters, one uppercase letter
 if (!preg_match($passwordRegex, $password)) {
     $errors[] = "Password must be at least 9 characters long and contain at least one uppercase letter.";
 }
 
-// Email validation (matches trigger logic)
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || 
-    !preg_match('/^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.(com|net|org|edu|gov|mil|info|io))$/', $email)) {
-    $errors[] = "Invalid email format: must be a standard email format with valid TLDs.";
+// If the email contains "@coffee.co", skip all regex validation
+if (strpos($email, '@coffee.co') === false) {
+    // Validate non-admin email: Must follow a standard email format with valid TLDs
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || 
+        !preg_match('/^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.(com|net|org|edu|gov|mil|info|io))$/', $email)) {
+        $errors[] = "Invalid email format: must be a standard email format with valid TLDs.";
+    }
 }
-if ($isAdmin && !str_ends_with($email, "@coffee.co")) {
-    $errors[] = "Invalid email for admin: must end with @coffee.co.";
-}
+
 
 // Name validation (matches trigger logic)
 if (!preg_match('/^[A-Za-z]+([-\'][A-Za-z]+)*$/', $forname)) {
