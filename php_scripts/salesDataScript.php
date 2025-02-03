@@ -10,33 +10,31 @@ $errorMessage = "";
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
-// Query to fetch and calculate the total sales data
+// Query to fetch total sales data
 $query = "
     SELECT 
-        SUM(quantitySold) AS totalQuantitySold, 
-        SUM(totalCosts) AS totalCost, 
-        SUM(revenue) AS totalRevenue, 
-        SUM(profit) AS totalProfit
+        COALESCE(SUM(quantitySold), 0) AS totalQuantitySold, 
+        COALESCE(SUM(totalCosts), 0) AS totalCost, 
+        COALESCE(SUM(revenue), 0) AS totalRevenue, 
+        COALESCE(SUM(profit), 0) AS totalProfit
     FROM sales
 ";
 
 $result = $conn->query($query);
 
-if ($result && $result->num_rows > 0) {
-    // Fetch the row with aggregated data
+if ($result) {
     $row = $result->fetch_assoc();
 
     // Prepare the data for display
     $saleDataItems[] = [
-        'totalQuantitySold' => $row['totalQuantitySold'] ?? 0,
-        'totalCost' => $row['totalCost'] ?? 0,
-        'revenue' => $row['totalRevenue'] ?? 0,
-        'profit' => $row['totalProfit'] ?? 0,
+        'totalQuantitySold' => $row['totalQuantitySold'],
+        'totalCost' => $row['totalCost'],
+        'revenue' => $row['totalRevenue'],
+        'profit' => $row['totalProfit'],
     ];
 } else {
-    $errorMessage = "No sales data found. ";
+    $errorMessage = "No sales data found.";
 }
 
-// Close the database connection
 $conn->close();
 ?>
