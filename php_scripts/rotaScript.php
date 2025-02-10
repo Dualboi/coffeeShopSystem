@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
     }
 
+
     // Delete Shift
     if (isset($_POST['shift_id_delete'])) {
         $rotaID = $_POST['shift_id_delete'];
